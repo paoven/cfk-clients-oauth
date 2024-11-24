@@ -34,7 +34,7 @@ client id -> see client id under applications overview
 secret id -> see secret value under Certificates & secrets on the left bar
 ```
 
-![](Application.png)
+![](images/Application.png)
 
 ### Create Secrets
 
