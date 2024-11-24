@@ -124,9 +124,46 @@ kubectl apply -f ./cluster.yaml -n confluent
 
 ## Producer Container
 
+Deploy the Producer (Pod having kafka cli tools)
+
+```shell
+kubectl apply -f ./producer.yaml -n confluent
 ```
-TODO: add instructions for CLI based producer
+
+Get into the producer Pod shell and configure client
+
+```shell
+
+cd /tmp
+
+cat <<EOF >> client.properties
+sasl.mechanism=OAUTHBEARER
+security.protocol=SASL_PLAINTEXT
+group.id=console-consumer-group
+sasl.login.callback.handler.class=org.apache.kafka.common.security.oauthbearer.secured.OAuthBearerLoginCallbackHandler
+sasl.oauthbearer.token.endpoint.url=https://login.microsoftonline.com/<tenant_id>/oauth2/v2.0/token
+sasl.jaas.config=org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required \
+      clientId="<client_id>" \
+      clientSecret="client_secret>"\
+      scope="<client_id>/.default";
+EOF
 ```
+
+Produce and read some records
+
+```shell
+
+/opt/kafka/bin/kafka-console-producer.sh \
+  --bootstrap-server broker.confluent.svc.cluster.local:9092 \
+  --topic test-topic \
+  --producer.config client.properties
+
+/opt/kafka/bin/kafka-console-consumer.sh \
+  --bootstrap-server broker.confluent.svc.cluster.local:9092 \
+  --topic test-topic \
+  --consumer.config client.properties
+```
+
 
 ## Control Center
 
