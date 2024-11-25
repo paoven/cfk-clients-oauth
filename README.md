@@ -169,26 +169,6 @@ Produce and read some records
 
 * [CFK client-side OAuth/OIDC authentication](https://docs.confluent.io/operator/current/co-authenticate-kafka.html#client-side-oauth-oidc-authentication-for-ak-and-kraft)
 
-Finally, we would like to see the produced events also in C3.
-We need to add OAuth configurations as well to authenticate to the Kafka brokers.
-
-```yaml
-dependencies:
-  kafka:
-    bootstrapEndpoint: broker.confluent.svc.cluster.local:9092
-    authentication:
-      type: oauth
-      jaasConfig:
-        secretRef: oauth-jass
-      oauthSettings:
-        tokenEndpointUri: see above
-        scope: <Azure client id of the broker application>/.default>
-```
-
-```
-# Update cluster
-kubectl apply -f ./cluster.yaml -n confluent
-
 # Port forward C3
 kubectl port-forward controlcenter-0 9021:9021
 ```
